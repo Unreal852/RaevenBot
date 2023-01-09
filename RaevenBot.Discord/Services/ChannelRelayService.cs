@@ -4,6 +4,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Models;
+using Serilog;
 using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
@@ -20,7 +21,7 @@ public class ChannelRelayService : IChannelRelayService
         _databaseStorage = databaseStorage;
         discordClient.Client.MessageCreated += OnMessageCreated;
 
-        
+
         using (Operation.Time("Fetching relay channels from database"))
         {
             foreach (var channelRelay in _databaseStorage.GetCollection<ChannelRelayInfo>().FindAll())
@@ -53,6 +54,17 @@ public class ChannelRelayService : IChannelRelayService
         {
             var channel = await relayInfo.GetTargetedChannel(_discordClient);
             var messageBuilder = new DiscordMessageBuilder(e.Message);
+            foreach (var messageAttachment in e.Message.Attachments)
+            {
+                if (!messageAttachment.MediaType.StartsWith("image"))
+                    continue;
+                var builder = new DiscordEmbedBuilder
+                {
+                        ImageUrl = messageAttachment.Url
+                };
+                messageBuilder.AddEmbed(builder.Build());
+            }
+
             await channel.SendMessageAsync(messageBuilder);
         }
     }
