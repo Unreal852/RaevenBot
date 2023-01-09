@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using LiteDB;
 using Microsoft.Extensions.Logging;
 using RaevenBot.Discord.Contracts;
+using RaevenBot.Discord.Models;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace RaevenBot.Discord.Services;
 
@@ -15,14 +18,23 @@ public class DiscordClientService : IDiscordClient
 
     public DiscordClient? Client { get; private set; }
 
+    private string GetToken()
+    {
+        var token = Environment.GetEnvironmentVariable("Token");
+        if (token != null)
+            return token;
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "bot_config.json"));
+        var tokenFile = JsonSerializer.Deserialize<BotConfig>(json);
+        return tokenFile?.Token ?? throw new Exception("Missing Token");
+    }
+
     public void Initialize()
     {
         if (Client != null)
             return;
         var discordConfig = new DiscordConfiguration
         {
-                Token = Environment.GetEnvironmentVariable("Token") ??
-                        throw new Exception("Missing environment variable 'Token'"),
+                Token = GetToken(),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LoggerFactory = new LoggerFactory().AddSerilog()
