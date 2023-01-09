@@ -20,7 +20,11 @@ public class CommandModule : BaseCommandModule
     [Command("sub")]
     public async Task SubscribeToChannel(CommandContext ctx, DiscordChannel channel)
     {
-        var channelId = ctx.Channel.Id;
+        if (channel.Id == ctx.Channel.Id)
+        {
+            await ctx.RespondAsync($"You can't subscribe a channel to itself. '{channel.Name}'");
+            return;
+        }
         if (await ChannelRelayService.CreateRelay(channel.Id, ctx.Channel.Id))
         {
             await ctx.RespondAsync($"The messages from the channel '{channel.Name}' will be forwarded here");
