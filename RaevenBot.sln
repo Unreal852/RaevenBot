@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaevenBot.Discord", "RaevenBot.Discord\RaevenBot.Discord.csproj", "{AF4E9AC3-C71B-4B63-950D-018AA484A422}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DC4B3B01-01DF-4586-B945-8A31FD5269C1}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF4E9AC3-C71B-4B63-950D-018AA484A422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4E9AC3-C71B-4B63-950D-018AA484A422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4E9AC3-C71B-4B63-950D-018AA484A422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4E9AC3-C71B-4B63-950D-018AA484A422}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
