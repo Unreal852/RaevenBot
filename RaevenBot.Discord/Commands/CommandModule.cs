@@ -11,12 +11,6 @@ public class CommandModule : BaseCommandModule
 {
     public IChannelRelayService ChannelRelayService { private get; set; } = null!;
 
-    [Command("ping")]
-    public async Task GreetCommand(CommandContext ctx)
-    {
-        await ctx.RespondAsync("pong");
-    }
-
     [Command("sub")]
     public async Task SubscribeToChannel(CommandContext ctx, DiscordChannel channel)
     {
