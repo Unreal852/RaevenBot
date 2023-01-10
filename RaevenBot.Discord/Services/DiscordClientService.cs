@@ -44,7 +44,11 @@ public class DiscordClientService : IDiscordClient
 
         var commandsConfig = new CommandsNextConfiguration
         {
+#if RELEASE
                 StringPrefixes = new[] { "!" },
+#elif DEBUG
+                StringPrefixes = new[] { "?" },
+#endif
                 Services = Program.ServiceProvider
         };
 
