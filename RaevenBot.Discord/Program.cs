@@ -21,6 +21,11 @@ internal static class Program
         var discord = ServiceProvider.GetService<IDiscordClient>();
 
         await discord.InitializeAndConnectAsync();
-        await Task.Delay(-1);
+        
+        while (Console.ReadLine() != "exit")
+        {
+        }
+
+        await discord.DisconnectAsync();
     }
 }

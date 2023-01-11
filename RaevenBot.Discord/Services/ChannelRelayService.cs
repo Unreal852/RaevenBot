@@ -48,6 +48,18 @@ public class ChannelRelayService : IChannelRelayService
         return Task.FromResult(false);
     }
 
+    public Task<bool> RemoveRelay(ulong fromChannelId, ulong toChannelId)
+    {
+        if (_relays.TryRemove(fromChannelId, out var channelRelayInfo))
+        {
+            var dbCol = _databaseStorage.GetCollection<ChannelRelayInfo>();
+            var deleted = dbCol.DeleteMany(info => info.FromChannelId == fromChannelId && info.ToChannelId == toChannelId);
+            return Task.FromResult(deleted >= 1);
+        }
+
+        return Task.FromResult(false);
+    }
+
     private async Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
         if (_relays.TryGetValue(e.Channel.Id, out var relayInfo))
