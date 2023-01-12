@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using RaevenBot.Discord.Contracts;
@@ -7,50 +8,24 @@ using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Commands;
 
-public enum ChannelRelaySubCommand
-{
-    Sub,
-    Unsub,
-    Unknown,
-}
-
+[Group("channel"), Aliases("chan", "ch")]
+[Description("Manage channel relays.")]
+[RequirePermissions(Permissions.ManageChannels)]
 public class ChannelRelayCommandModule : BaseCommandModule
 {
     public IChannelRelayService ChannelRelayService { private get; set; } = null!;
 
-    [Command("channel")]
-    public async Task HandleCommand(CommandContext ctx, string subCommand, DiscordChannel channel)
+    [Command("subscribe"), Aliases("sub"), Description("Subscribe to a channel to relay the messages here.")]
+    public async Task SubscribeCommand(CommandContext ctx, DiscordChannel channel)
     {
-        var cmd = ParseSubCommand(subCommand);
-        if (cmd == ChannelRelaySubCommand.Unknown)
-        {
-            await ctx.RespondAsync("Unknown command.");
-            return;
-        }
-
-        if (cmd == ChannelRelaySubCommand.Sub)
-        {
-            if (await ChannelRelayService.CreateRelay(channel.Id, ctx.Channel.Id))
-                await ctx.RespondAsync($"The messages from the channel '{channel.Name}' will be forwarded here");
-            else
-                await ctx.RespondAsync($"Failed to subscribe to the '{channel.Name}' channel");
-        }
-        else if (cmd == ChannelRelaySubCommand.Unsub)
-        {
-            if (await ChannelRelayService.RemoveRelay(channel.Id, ctx.Channel.Id))
-                await ctx.RespondAsync($"Successfully unsubscribed from the '{channel.Name}' channel");
-            else
-                await ctx.RespondAsync($"Failed to unsubscribed from the '{channel.Name}' channel");
-        }
+        var result = await ChannelRelayService.CreateRelay(channel, ctx.Channel);
+        await ctx.RespondAsync(result.ToEmbed());
     }
 
-    private ChannelRelaySubCommand ParseSubCommand(string subCommand)
+    [Command("unsubscribe"), Aliases("unsub"), Description("Unsubscribe from a channel.")]
+    public async Task UnsubscribeCommand(CommandContext ctx, DiscordChannel channel)
     {
-        return subCommand.ToLower() switch
-        {
-                "sub"   => ChannelRelaySubCommand.Sub,
-                "unsub" => ChannelRelaySubCommand.Unsub,
-                _       => ChannelRelaySubCommand.Unknown
-        };
+        var result = await ChannelRelayService.RemoveRelay(channel, ctx.Channel);
+        await ctx.RespondAsync(result.ToEmbed());
     }
 }

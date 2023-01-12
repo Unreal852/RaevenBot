@@ -4,13 +4,14 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Models;
-using Serilog;
 using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
 
 public class ChannelRelayService : IChannelRelayService
 {
+    // TODO: Support multi-cast
+
     private readonly IDiscordClient                                _discordClient;
     private readonly IDatabaseStorage                              _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
@@ -19,8 +20,9 @@ public class ChannelRelayService : IChannelRelayService
     {
         _discordClient = discordClient;
         _databaseStorage = databaseStorage;
-        discordClient.Client.MessageCreated += OnMessageCreated;
 
+        discordClient.Client.MessageCreated += OnMessageCreated;
+        discordClient.Client.ChannelDeleted += OnChannelDeleted;
 
         using (Operation.Time("Fetching relay channels from database"))
         {
@@ -31,33 +33,41 @@ public class ChannelRelayService : IChannelRelayService
         }
     }
 
-    public Task<bool> CreateRelay(ulong fromChannelId, ulong toChannelId)
+    public Task<OpResult> CreateRelay(DiscordChannel sourceChannel, DiscordChannel targetChannel)
     {
-        return CreateRelay(new ChannelRelayInfo { FromChannelId = fromChannelId, ToChannelId = toChannelId });
-    }
+        var channelRelayInfo = new ChannelRelayInfo(sourceChannel, targetChannel);
 
-    public Task<bool> CreateRelay(ChannelRelayInfo relayInfo)
-    {
-        if (_relays.TryAdd(relayInfo.FromChannelId, relayInfo))
+        if (_relays.TryAdd(sourceChannel.Id, channelRelayInfo))
         {
-            var dbCol = _databaseStorage.GetCollection<ChannelRelayInfo>();
-            dbCol.Insert(relayInfo);
-            return Task.FromResult(true);
+            var databaseCollection = _databaseStorage.GetCollection<ChannelRelayInfo>();
+            var insertedDocument = databaseCollection.Insert(channelRelayInfo);
+            if (insertedDocument == null)
+            {
+                _relays.TryRemove(sourceChannel.Id, out _);
+                return Task.FromResult(OpResult.NewFailed("Failed to save the relay into the database."));
+            }
+
+            return Task.FromResult(OpResult.NewSuccess(
+                    $"Messages from the channel '{sourceChannel.Name}' will be relayed into '{targetChannel.Name}'."));
         }
 
-        return Task.FromResult(false);
+        return Task.FromResult(OpResult.NewFailed(
+                $"The channel '{sourceChannel.Name}' is already registered. (Multi-Cast not yet supported)"));
     }
 
-    public Task<bool> RemoveRelay(ulong fromChannelId, ulong toChannelId)
+    public Task<OpResult> RemoveRelay(DiscordChannel sourceChannel, DiscordChannel targetChannel)
     {
-        if (_relays.TryRemove(fromChannelId, out var channelRelayInfo))
+        if (_relays.TryRemove(sourceChannel.Id, out _))
         {
             var dbCol = _databaseStorage.GetCollection<ChannelRelayInfo>();
-            var deleted = dbCol.DeleteMany(info => info.FromChannelId == fromChannelId && info.ToChannelId == toChannelId);
-            return Task.FromResult(deleted >= 1);
+            var deleted = dbCol.DeleteMany(info =>
+                    info.FromChannelId == sourceChannel.Id && info.ToChannelId == targetChannel.Id);
+            return Task.FromResult(deleted >= 1
+                    ? OpResult.NewSuccess("The relay has been deleted.")
+                    : OpResult.NewFailed("No relays were deleted."));
         }
 
-        return Task.FromResult(false);
+        return Task.FromResult(OpResult.NewFailed("This channel has no subscribed channels"));
     }
 
     private async Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
@@ -79,5 +89,11 @@ public class ChannelRelayService : IChannelRelayService
 
             await channel.SendMessageAsync(messageBuilder);
         }
+    }
+
+    private Task OnChannelDeleted(DiscordClient sender, ChannelDeleteEventArgs e)
+    {
+        // TODO: Automatically remove relay when registered channel is deleted
+        return Task.CompletedTask;
     }
 }

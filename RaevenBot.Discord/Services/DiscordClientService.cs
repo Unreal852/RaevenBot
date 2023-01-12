@@ -28,13 +28,29 @@ public class DiscordClientService : IDiscordClient
         return tokenFile?.Token ?? throw new Exception("Missing Token");
     }
 
+    private BotConfig? LoadBotConfig()
+    {
+        var filePath = Path.Combine(AppContext.BaseDirectory, "config.json");
+        var rawJson = File.ReadAllText(filePath);
+        var config = JsonSerializer.Deserialize<BotConfig>(rawJson);
+        return config;
+    }
+
     public void Initialize()
     {
         if (Client != null)
             return;
+
+        var botConfig = LoadBotConfig();
+        if (botConfig == null)
+        {
+            Log.Error("Failed to load the bot configuration");
+            return;
+        }
+
         var discordConfig = new DiscordConfiguration
         {
-                Token = GetToken(),
+                Token = botConfig.Token,
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.All,
                 LoggerFactory = new LoggerFactory().AddSerilog()
@@ -45,7 +61,7 @@ public class DiscordClientService : IDiscordClient
         var commandsConfig = new CommandsNextConfiguration
         {
 #if RELEASE
-                StringPrefixes = new[] { "!" },
+                StringPrefixes = botConfig.Prefixes,
 #elif DEBUG
                 StringPrefixes = new[] { "?" },
 #endif

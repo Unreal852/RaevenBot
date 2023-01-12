@@ -18,4 +18,10 @@
       <PackageReference Include="SerilogTimings" Version="3.0.2-dev-00041" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="config.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

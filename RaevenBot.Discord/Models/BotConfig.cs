@@ -1,6 +1,19 @@
-﻿namespace RaevenBot.Discord.Models;
+﻿using System.Text.Json.Serialization;
 
-public class BotConfig
+namespace RaevenBot.Discord.Models;
+
+public class BotConfig : IJsonOnDeserialized
 {
-    public string Token { get; set; } = string.Empty;
+    public string   Token    { get; set; } = string.Empty;
+    public string[] Prefixes { get; set; } = default!;
+
+    public void OnDeserialized()
+    {
+        var envToken = Environment.GetEnvironmentVariable("Token");
+        if (envToken != null)
+            Token = envToken;
+
+        // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+        Prefixes ??= new[] { "!" };
+    }
 }

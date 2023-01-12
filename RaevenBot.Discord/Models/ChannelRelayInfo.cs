@@ -6,9 +6,19 @@ namespace RaevenBot.Discord.Models;
 
 public class ChannelRelayInfo
 {
+    public ChannelRelayInfo()
+    {
+    }
+
+    public ChannelRelayInfo(DiscordChannel sourceChannel, DiscordChannel targetChannel)
+    {
+        FromChannelId = sourceChannel.Id;
+        ToChannelId = targetChannel.Id;
+    }
+
     public ulong FromChannelId { get; set; }
     public ulong ToChannelId   { get; set; }
-    
+
     [BsonIgnore]
     private DiscordChannel? ToChannel { get; set; }
 
