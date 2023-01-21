@@ -15,7 +15,7 @@ public static class DiscordMessageExtensions
         {
                 Username = discordMessage.Author.Username,
                 Avatar = new Uri(discordMessage.Author.AvatarUrl),
-                Content = discordMessage.Content,
+                Content = discordMessage.Content.EmbedUrls(),
                 Embeds = new List<Embed>()
         };
 
