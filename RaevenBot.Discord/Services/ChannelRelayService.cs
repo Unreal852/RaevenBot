@@ -72,6 +72,8 @@ public class ChannelRelayService : IChannelRelayService
 
     private async Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs e)
     {
+        if (e.Author == sender.CurrentUser)
+            return;
         if (_relays.TryGetValue(e.Channel.Id, out var relayInfo))
         {
             var channel = await relayInfo.GetTargetedChannel(_discordClient);

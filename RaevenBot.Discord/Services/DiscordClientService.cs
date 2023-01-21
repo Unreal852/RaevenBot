@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using LiteDB;
 using Microsoft.Extensions.Logging;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Models;
@@ -17,16 +16,6 @@ public class DiscordClientService : IDiscordClient
     }
 
     public DiscordClient? Client { get; private set; }
-
-    private string GetToken()
-    {
-        var token = Environment.GetEnvironmentVariable("Token");
-        if (token != null)
-            return token;
-        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "bot_config.json"));
-        var tokenFile = JsonSerializer.Deserialize<BotConfig>(json);
-        return tokenFile?.Token ?? throw new Exception("Missing Token");
-    }
 
     private BotConfig? LoadBotConfig()
     {

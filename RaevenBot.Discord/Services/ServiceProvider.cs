@@ -8,6 +8,7 @@ namespace RaevenBot.Discord.Services;
 [Singleton<ILogger>(Instance = nameof(Logger))]
 [Singleton<IDiscordClient, DiscordClientService>]
 [Singleton<IChannelRelayService, ChannelRelayService>]
+[Singleton<IGuildedRelayService, GuildedRelayService>]
 [Singleton<IDatabaseStorage, DatabaseStorageService>]
 public partial class ServiceProvider
 {
