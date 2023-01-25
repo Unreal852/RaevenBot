@@ -15,13 +15,16 @@ internal static class Program
 
     private static async Task MainAsync(string[] args)
     {
-        Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+                    .WriteTo
+                    .Console()
+                    .CreateLogger();
 
         ServiceProvider = new ServiceProvider();
         var discord = ServiceProvider.GetService<IDiscordClient>();
 
         await discord.InitializeAndConnectAsync();
-        
+
         while (Console.ReadLine() != "exit")
         {
         }

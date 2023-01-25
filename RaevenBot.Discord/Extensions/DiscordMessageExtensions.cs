@@ -3,6 +3,7 @@ using System.Drawing;
 using DSharpPlus.Entities;
 using Guilded.Base;
 using Guilded.Base.Embeds;
+using Serilog;
 using GuildedEmbed = Guilded.Base.Embeds.Embed;
 
 namespace RaevenBot.Discord.Extensions;
@@ -21,6 +22,18 @@ public static class DiscordMessageExtensions
 
         foreach (var embed in discordMessage.Embeds)
             guildedMessage.Embeds.Add(embed.ToGuildedEmbed());
+
+        foreach (var attachment in discordMessage.Attachments)
+        {
+            Log.Information(attachment.MediaType);
+            if (attachment.MediaType.Contains("image") || attachment.MediaType.Contains("video") )
+                guildedMessage.Embeds.Add(new Embed
+                {
+                        Title = attachment.FileName,
+                        Url = new Uri(attachment.Url),
+                        Image = new EmbedMedia(attachment.Url)
+                });
+        }
 
         return guildedMessage;
     }
