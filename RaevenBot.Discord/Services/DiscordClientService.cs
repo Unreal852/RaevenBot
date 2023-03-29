@@ -9,13 +9,15 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace RaevenBot.Discord.Services;
 
+#pragma warning disable CS8618
+
 public class DiscordClientService : IDiscordClient
 {
     public DiscordClientService()
     {
     }
 
-    public DiscordClient? Client { get; private set; }
+    public DiscordClient Client { get; private set; }
 
     private BotConfig? LoadBotConfig()
     {

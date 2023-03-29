@@ -14,10 +14,10 @@ public static class DiscordMessageExtensions
     {
         var guildedMessage = new MessageContent
         {
-                Username = discordMessage.Author.Username,
-                Avatar = new Uri(discordMessage.Author.AvatarUrl),
-                Content = discordMessage.Content.EmbedUrls(),
-                Embeds = new List<Embed>()
+            Username = discordMessage.Author.Username,
+            Avatar = new Uri(discordMessage.Author.AvatarUrl),
+            Content = discordMessage.Content.EmbedUrls(),
+            Embeds = new List<Embed>()
         };
 
         foreach (var embed in discordMessage.Embeds)
@@ -25,13 +25,15 @@ public static class DiscordMessageExtensions
 
         foreach (var attachment in discordMessage.Attachments)
         {
-            Log.Information(attachment.MediaType);
-            if (attachment.MediaType.Contains("image") || attachment.MediaType.Contains("video") )
+#if DEBUG
+            Log.Information("Attachement Type: {MediaType}", attachment.MediaType);
+#endif
+            if (attachment.MediaType.Contains("image") || attachment.MediaType.Contains("video"))
                 guildedMessage.Embeds.Add(new Embed
                 {
-                        Title = attachment.FileName,
-                        Url = new Uri(attachment.Url),
-                        Image = new EmbedMedia(attachment.Url)
+                    Title = attachment.FileName,
+                    Url = new Uri(attachment.Url),
+                    Image = new EmbedMedia(attachment.Url)
                 });
         }
 
@@ -42,11 +44,11 @@ public static class DiscordMessageExtensions
     {
         var guildedEmbed = new GuildedEmbed
         {
-                Title = discordEmbed.Title,
-                Description = discordEmbed.Description,
-                Color = discordEmbed.Color.HasValue ? Color.FromArgb(discordEmbed.Color.Value.Value) : default,
-                Timestamp = discordEmbed.Timestamp?.DateTime ?? default,
-                Url = discordEmbed.Url
+            Title = discordEmbed.Title,
+            Description = discordEmbed.Description,
+            Color = discordEmbed.Color.HasValue ? Color.FromArgb(discordEmbed.Color.Value.Value) : default,
+            Timestamp = discordEmbed.Timestamp?.DateTime ?? default,
+            Url = discordEmbed.Url
         };
 
         if (discordEmbed.Author is { } author)
@@ -74,7 +76,7 @@ public static class DiscordMessageExtensions
     {
         return new MessageContent
         {
-                Embeds = new Collection<Embed> { discordEmbed.ToGuildedEmbed() }
+            Embeds = new Collection<Embed> { discordEmbed.ToGuildedEmbed() }
         };
     }
 }
