@@ -26,7 +26,6 @@ public static partial class StringExtensions
         return str;
     }
 
-    [GeneratedRegex("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?",
-            RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+    [GeneratedRegex("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
     private static partial Regex MyRegex();
 }
