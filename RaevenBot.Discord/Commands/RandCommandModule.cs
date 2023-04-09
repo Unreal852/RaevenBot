@@ -35,7 +35,7 @@ public class RandCommandModule : BaseCommandModule
         return letterSelected;
     }
 
-    [Command("randNumber"), Aliases("number", "rn", "n"), Description("Generates a random number")]
+    [Command("randomNumber"), Aliases("randNumber", "number", "rn", "n"), Description("Generates a random number")]
     public async Task RandomNumberGenerator(CommandContext ctx, int maxNumber)
     {
         try
@@ -51,7 +51,7 @@ public class RandCommandModule : BaseCommandModule
         }
     }
 
-    [Command("coinFlip"), Aliases("cf"), Description("Generates a coin flip")]
+    [Command("randomCoinFlip"), Aliases("randCoinFlip", "coinflip", "rcf", "cf"), Description("Generates a random coin flip")]
     public async Task CoinFlipGenerator(CommandContext ctx)
     {
         if (RandomFlip() == 0)
@@ -60,9 +60,27 @@ public class RandCommandModule : BaseCommandModule
             await ctx.RespondAsync("Face !");
     }
     
-    [Command("randomLetter"), Aliases("randLetter", "rl"), Description("Generates a coin flip")]
+    [Command("randomLetter"), Aliases("randLetter", "letter", "rl", "l"), Description("Generates a random letter")]
     public async Task RandomLetterGenerator(CommandContext ctx)
     {
         await ctx.RespondAsync($"La lettre que vous avez obtenue est la lettre {RandomLetter()} !");
+    }
+    
+    [Command("randomGame"), Aliases("randGame", "game", "rg", "g"), Description("Generates a random game")]
+    public async Task RandomGameGenerator(CommandContext ctx, params string[] args)
+    {
+        try
+        {
+            Random rand = new Random();
+            int randGame = rand.Next(args.Length);
+            await ctx.RespondAsync($"Et vous êtes tombé sur... {args[randGame]} !");
+        }
+        catch (Exception e)
+        {
+            Log.Warning("You have to enter games to choose one at random !");
+            await ctx.RespondAsync("Vous devez enter des jeux pour un choisir un au hasard !");
+            throw;
+        }
+        
     }
 }
