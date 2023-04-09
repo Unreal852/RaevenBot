@@ -27,6 +27,14 @@ public class RandCommandModule : BaseCommandModule
         return randFlip;
     }
 
+    private char RandomLetter()
+    {
+        Random rand = new Random();
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var letterSelected = chars[rand.Next(chars.Length)];
+        return letterSelected;
+    }
+
     [Command("randNumber"), Aliases("number", "rn", "n"), Description("Generates a random number")]
     public async Task RandomNumberGenerator(CommandContext ctx, int maxNumber)
     {
@@ -50,5 +58,11 @@ public class RandCommandModule : BaseCommandModule
             await ctx.RespondAsync("Pile !");
         else
             await ctx.RespondAsync("Face !");
+    }
+    
+    [Command("randomLetter"), Aliases("randLetter", "rl"), Description("Generates a coin flip")]
+    public async Task RandomLetterGenerator(CommandContext ctx)
+    {
+        await ctx.RespondAsync($"La lettre que vous avez obtenue est la lettre {RandomLetter()} !");
     }
 }
