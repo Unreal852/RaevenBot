@@ -1,86 +1,54 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using RaevenBot.Discord.Contracts;
 using Serilog;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace RaevenBot.Discord.Commands;
 
-[Group("random"), Aliases("rand", "rd", "r")]
+[Group("random"), Aliases("rand", "rd", "r", "rdm")]
 [Description("Random draw generator")]
 public class RandCommandModule : BaseCommandModule
 {
-    private int RandomInt(int max)
-    {
-        Random rand = new Random();
-        int randNumber = rand.Next(1, max + 1);
-        return randNumber;
-    }
+    private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    private int RandomFlip()
-    {
-        Random rand = new Random();
-        int randFlip = rand.Next(2);
-        return randFlip;
-    }
-
-    private char RandomLetter()
-    {
-        Random rand = new Random();
-        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var letterSelected = chars[rand.Next(chars.Length)];
-        return letterSelected;
-    }
+    public ILogger Logger { private get; set; } = null!;
 
     [Command("randomNumber"), Aliases("randNumber", "number", "rn", "n"), Description("Generates a random number")]
-    public async Task RandomNumberGenerator(CommandContext ctx, int maxNumber)
+    public async Task RandomNumberGenerator(CommandContext ctx, [Description("The positive maximum number.")] int maxNumber)
     {
-        try
+        if (maxNumber <= 0)
         {
-            string randNumber = RandomInt(maxNumber).ToString();
-            await ctx.RespondAsync("Vous avez tiré le chiffre: " + randNumber);
+            await ctx.RespondAsync("Veuillez entrer un nombre positif.");
+            return;
         }
-        catch (Exception e)
-        {
-            Log.Warning("Need to choice a number greater than 0");
-            await ctx.RespondAsync("Vous devez choisir un nombre supérieur à 0 !");
-            throw;
-        }
+
+        await ctx.RespondAsync("Vous avez tiré le chiffre: " + Random.Shared.Next(maxNumber + 1));
     }
 
     [Command("randomCoinFlip"), Aliases("randCoinFlip", "coinflip", "rcf", "cf"), Description("Generates a random coin flip")]
     public async Task CoinFlipGenerator(CommandContext ctx)
     {
-        if (RandomFlip() == 0)
+        if (Random.Shared.Next(2) == 0)
             await ctx.RespondAsync("Pile !");
         else
             await ctx.RespondAsync("Face !");
     }
-    
+
     [Command("randomLetter"), Aliases("randLetter", "letter", "rl", "l"), Description("Generates a random letter")]
     public async Task RandomLetterGenerator(CommandContext ctx)
     {
-        await ctx.RespondAsync($"La lettre que vous avez obtenue est la lettre {RandomLetter()} !");
+        await ctx.RespondAsync($"La lettre que vous avez obtenue est la lettre {Chars[Random.Shared.Next(Chars.Length)]} !");
     }
-    
+
     [Command("randomGame"), Aliases("randGame", "game", "rg", "g"), Description("Generates a random game")]
     public async Task RandomGameGenerator(CommandContext ctx, params string[] args)
     {
-        try
+        if (args.Length == 2)
         {
-            Random rand = new Random();
-            int randGame = rand.Next(args.Length);
-            await ctx.RespondAsync($"Et vous êtes tombé sur... {args[randGame]} !");
+            await ctx.RespondAsync($"Veuillez entrer au moins 2 valeurs");
+            return;
         }
-        catch (Exception e)
-        {
-            Log.Warning("You have to enter games to choose one at random !");
-            await ctx.RespondAsync("Vous devez enter des jeux pour un choisir un au hasard !");
-            throw;
-        }
-        
+        await ctx.RespondAsync($"Et vous êtes tombé sur... {args[Random.Shared.Next(args.Length)]} !");
     }
 }

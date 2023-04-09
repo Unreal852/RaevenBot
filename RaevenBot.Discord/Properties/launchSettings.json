@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "RaevenBot.Discord": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "Token": "MTA2MjAzOTg4ODU2MTcxMzMwMw.GcHc_a.4Lv2z4rSDuDNjT5AXAe1a2RKap5Otbwu8SaqaA"
+      }
+    }
+  }
+}

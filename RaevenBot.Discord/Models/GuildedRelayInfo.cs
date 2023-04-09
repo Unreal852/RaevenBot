@@ -1,6 +1,5 @@
 ﻿using DSharpPlus.Entities;
 using LiteDB;
-using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Models;
 
