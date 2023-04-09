@@ -16,10 +16,17 @@ public class RandCommandModule : BaseCommandModule
     private int RandomInt(int max)
     {
         Random rand = new Random();
-        int randNumber = rand.Next(1, max+1);
+        int randNumber = rand.Next(1, max + 1);
         return randNumber;
     }
-    
+
+    private int RandomFlip()
+    {
+        Random rand = new Random();
+        int randFlip = rand.Next(2);
+        return randFlip;
+    }
+
     [Command("randNumber"), Aliases("number", "rn", "n"), Description("Generates a random number")]
     public async Task RandomNumberGenerator(CommandContext ctx, int maxNumber)
     {
@@ -35,5 +42,13 @@ public class RandCommandModule : BaseCommandModule
             throw;
         }
     }
-    
+
+    [Command("coinFlip"), Aliases("cf"), Description("Generates a coin flip")]
+    public async Task CoinFlipGenerator(CommandContext ctx)
+    {
+        if (RandomFlip() == 0)
+            await ctx.RespondAsync("Pile !");
+        else
+            await ctx.RespondAsync("Face !");
+    }
 }
