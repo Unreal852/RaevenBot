@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using RaevenBot.Discord.Contracts;
+using Serilog;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
@@ -19,11 +20,20 @@ public class RandCommandModule : BaseCommandModule
         return randNumber;
     }
     
-    [Command("randNumber"), Aliases("rn"), Description("Generates a random number")]
+    [Command("randNumber"), Aliases("number", "rn", "n"), Description("Generates a random number")]
     public async Task RandomNumberGenerator(CommandContext ctx, int maxNumber)
     {
-        string randNumber = RandomInt(maxNumber).ToString();
-        await ctx.RespondAsync("Le chiffre tiré est: " + randNumber);
+        try
+        {
+            string randNumber = RandomInt(maxNumber).ToString();
+            await ctx.RespondAsync("Vous avez tiré le chiffre: " + randNumber);
+        }
+        catch (Exception e)
+        {
+            Log.Warning("Need to choice a number greater than 0");
+            await ctx.RespondAsync("Vous devez choisir un nombre supérieur à 0 !");
+            throw;
+        }
     }
     
 }
