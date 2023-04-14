@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01490" />
-      <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01490" />
+      <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01493" />
+      <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01493" />
       <PackageReference Include="Guilded.Webhook" Version="1.1.0" />
       <PackageReference Include="Jab" Version="0.8.6" />
       <PackageReference Include="LiteDB" Version="5.0.16" />
