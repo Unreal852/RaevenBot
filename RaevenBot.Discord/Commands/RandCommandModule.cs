@@ -19,11 +19,11 @@ public class RandCommandModule : BaseCommandModule
     {
         if (maxNumber <= 0)
         {
-            await ctx.RespondAsync("Veuillez entrer un nombre positif.");
+            await ctx.RespondAsync("Veuillez entrer un nombre positif !");
             return;
         }
 
-        await ctx.RespondAsync("Vous avez tiré le chiffre: " + Random.Shared.Next(maxNumber + 1));
+        await ctx.RespondAsync("Vous avez tiré le chiffre " + Random.Shared.Next(maxNumber + 1));
     }
 
     [Command("randomCoinFlip"), Aliases("randCoinFlip", "coinflip", "rcf", "cf"), Description("Generates a random coin flip")]
