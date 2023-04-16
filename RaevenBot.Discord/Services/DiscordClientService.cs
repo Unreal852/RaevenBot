@@ -1,50 +1,47 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using Microsoft.Extensions.Logging;
 using RaevenBot.Discord.Contracts;
-using RaevenBot.Discord.Models;
 using Serilog;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace RaevenBot.Discord.Services;
 
 #pragma warning disable CS8618
 
-public class DiscordClientService : IDiscordClient
+public sealed class DiscordClientService : IDiscordClient
 {
-    public DiscordClientService()
+    private readonly IFileService _fileService;
+    private readonly ILogger _logger;
+
+    public DiscordClientService(ILogger logger, IFileService fileService)
     {
+        _logger = logger;
+        _fileService = fileService;
     }
 
     public DiscordClient Client { get; private set; }
-
-    private BotConfig? LoadBotConfig()
-    {
-        var filePath = Path.Combine(AppContext.BaseDirectory, "config.json");
-        var rawJson = File.ReadAllText(filePath);
-        var config = JsonSerializer.Deserialize<BotConfig>(rawJson);
-        return config;
-    }
 
     public void Initialize()
     {
         if (Client != null)
             return;
 
-        var botConfig = LoadBotConfig();
-        if (botConfig == null)
+        if (!_fileService.TryGetConfiguration(out var botConfig))
         {
-            Log.Error("Failed to load the bot configuration");
-            return;
+            _logger.Error("Failed to load the bot configuration");
+        }
+
+        if (string.IsNullOrWhiteSpace(botConfig!.Token))
+        {
+            _logger.Error("Missing token in the bot configuration");
         }
 
         var discordConfig = new DiscordConfiguration
         {
-                Token = botConfig.Token,
-                TokenType = TokenType.Bot,
-                Intents = DiscordIntents.All,
-                LoggerFactory = new LoggerFactory().AddSerilog()
+            Token = botConfig!.Token,
+            TokenType = TokenType.Bot,
+            Intents = DiscordIntents.All,
+            LoggerFactory = new Microsoft.Extensions.Logging.LoggerFactory().AddSerilog()
         };
 
         Client = new DiscordClient(discordConfig);
@@ -52,11 +49,11 @@ public class DiscordClientService : IDiscordClient
         var commandsConfig = new CommandsNextConfiguration
         {
 #if RELEASE
-                StringPrefixes = botConfig.Prefixes,
+            StringPrefixes = botConfig.Prefixes,
 #elif DEBUG
-                StringPrefixes = new[] { "?" },
+            StringPrefixes = new[] { "?" },
 #endif
-                Services = Program.ServiceProvider
+            Services = Program.ServiceProvider
         };
 
         var commands = Client.UseCommandsNext(commandsConfig);

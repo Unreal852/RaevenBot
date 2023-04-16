@@ -10,14 +10,14 @@ using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
 
-public class GuildedRelayService : IGuildedRelayService
+public sealed class GuildedRelayService : IGuildedRelayService
 {
-    private readonly IDiscordClient                                _discordClient;
-    private readonly IDatabaseStorage                              _databaseStorage;
-    private readonly GuildedWebhookClient                          _guildedWebhookClient = new(Array.Empty<string>());
-    private readonly ConcurrentDictionary<ulong, GuildedRelayInfo> _relays               = new();
+    private readonly IDiscordClient _discordClient;
+    private readonly IDatabaseService _databaseStorage;
+    private readonly GuildedWebhookClient _guildedWebhookClient = new(Array.Empty<string>());
+    private readonly ConcurrentDictionary<ulong, GuildedRelayInfo> _relays = new();
 
-    public GuildedRelayService(IDiscordClient discordClient, IDatabaseStorage databaseStorage)
+    public GuildedRelayService(IDiscordClient discordClient, IDatabaseService databaseStorage)
     {
         _discordClient = discordClient;
         _databaseStorage = databaseStorage;

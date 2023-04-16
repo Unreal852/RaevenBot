@@ -8,15 +8,15 @@ using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
 
-public class ChannelRelayService : IChannelRelayService
+public sealed class ChannelRelayService : IChannelRelayService
 {
     // TODO: Support multi-cast
 
     private readonly IDiscordClient                                _discordClient;
-    private readonly IDatabaseStorage                              _databaseStorage;
+    private readonly IDatabaseService                              _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
 
-    public ChannelRelayService(IDiscordClient discordClient, IDatabaseStorage databaseStorage)
+    public ChannelRelayService(IDiscordClient discordClient, IDatabaseService databaseStorage)
     {
         _discordClient = discordClient;
         _databaseStorage = databaseStorage;

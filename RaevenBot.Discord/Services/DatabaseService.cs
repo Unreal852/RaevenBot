@@ -3,15 +3,16 @@ using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Services;
 
-public class DatabaseStorageService : IDatabaseStorage
+public sealed class DatabaseService : IDatabaseService
 {
     private const string DatabaseFileName = "database.db";
 
-    public DatabaseStorageService()
+    private readonly IFileService _fileService;
+
+    public DatabaseService(IFileService fileService)
     {
-        var databasePath = Path.Combine(AppContext.BaseDirectory, "db");
-        Directory.CreateDirectory(databasePath);
-        Database = new LiteDatabase(Path.Combine(databasePath, DatabaseFileName));
+        _fileService = fileService;
+        Database = new LiteDatabase(Path.Combine(_fileService.DataFolder.FullName, DatabaseFileName));
     }
 
     private LiteDatabase Database { get; set; }
