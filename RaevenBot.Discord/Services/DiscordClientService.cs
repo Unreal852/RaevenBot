@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using RaevenBot.Discord.Contracts;
 using Serilog;
 
@@ -45,6 +46,7 @@ public sealed class DiscordClientService : IDiscordClient
         };
 
         Client = new DiscordClient(discordConfig);
+        Client.GuildDownloadCompleted += OnGuildDownloadCompleted;
 
         var commandsConfig = new CommandsNextConfiguration
         {
@@ -58,6 +60,12 @@ public sealed class DiscordClientService : IDiscordClient
 
         var commands = Client.UseCommandsNext(commandsConfig);
         commands.RegisterCommands(Assembly.GetExecutingAssembly());
+    }
+
+    private Task OnGuildDownloadCompleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
+    {
+        var activity = new DiscordActivity("The Mandalorian", ActivityType.Watching);
+        return Client.UpdateStatusAsync(activity);
     }
 
     public Task InitializeAndConnectAsync()
