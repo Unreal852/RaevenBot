@@ -9,7 +9,6 @@ namespace RaevenBot.Discord.Services;
 [Singleton<IFileService, FileService>]
 [Singleton<IDiscordClient, DiscordClientService>]
 [Singleton<IChannelRelayService, ChannelRelayService>]
-[Singleton<IGuildedRelayService, GuildedRelayService>]
 [Singleton<IDatabaseService, DatabaseService>]
 public sealed partial class ServiceProvider
 {
