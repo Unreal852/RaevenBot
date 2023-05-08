@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  raevenbot:
+    build: .
+    image: raevenbot
+    volumes:
+      - ~/appdata/raevenbot:/app/data
