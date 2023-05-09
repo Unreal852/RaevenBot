@@ -55,7 +55,7 @@ public sealed class DiscordClientService : IDiscordClient
         var commandsConfig = new CommandsNextConfiguration
         {
 #if RELEASE
-            StringPrefixes = botConfig.Prefixes,
+            StringPrefixes = _botConfig.Prefixes,
 #elif DEBUG
             StringPrefixes = new[] { "?" },
 #endif
