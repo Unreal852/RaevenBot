@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 
 namespace RaevenBot.Discord.Contracts;
 
@@ -10,4 +11,6 @@ public interface IDiscordClient
     Task InitializeAndConnectAsync();
     Task ConnectAsync();
     Task DisconnectAsync();
+    Task SetActivity(ActivityType activityType, string activityName, UserStatus status);
+    Task SetRandomActivity();
 }

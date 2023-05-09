@@ -2,6 +2,7 @@
 using RaevenBot.Discord.Models;
 using Serilog;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Services;
 
@@ -14,6 +15,10 @@ public sealed class FileService : IFileService
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         WriteIndented = true,
+        Converters = 
+        {
+            new JsonStringEnumConverter()
+        }
     };
 
     public FileService(ILogger logger)

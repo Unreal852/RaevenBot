@@ -3,6 +3,8 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using RaevenBot.Discord.Contracts;
+using RaevenBot.Discord.Extensions;
+using RaevenBot.Discord.Models;
 using Serilog;
 
 namespace RaevenBot.Discord.Services;
@@ -13,6 +15,8 @@ public sealed class DiscordClientService : IDiscordClient
 {
     private readonly IFileService _fileService;
     private readonly ILogger _logger;
+
+    private BotConfig _botConfig = null!;
 
     public DiscordClientService(ILogger logger, IFileService fileService)
     {
@@ -27,19 +31,19 @@ public sealed class DiscordClientService : IDiscordClient
         if (Client != null)
             return;
 
-        if (!_fileService.TryGetConfiguration(out var botConfig))
+        if (!_fileService.TryGetConfiguration(out _botConfig!))
         {
             _logger.Error("Failed to load the bot configuration");
         }
 
-        if (string.IsNullOrWhiteSpace(botConfig!.Token))
+        if (string.IsNullOrWhiteSpace(_botConfig.Token))
         {
             _logger.Error("Missing token in the bot configuration");
         }
 
         var discordConfig = new DiscordConfiguration
         {
-            Token = botConfig!.Token,
+            Token = _botConfig.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
             LoggerFactory = new Microsoft.Extensions.Logging.LoggerFactory().AddSerilog()
@@ -62,10 +66,16 @@ public sealed class DiscordClientService : IDiscordClient
         commands.RegisterCommands(Assembly.GetExecutingAssembly());
     }
 
-    private Task OnGuildDownloadCompleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
+    public Task SetActivity(ActivityType activityType, string activityName, UserStatus status)
     {
-        var activity = new DiscordActivity("The Mandalorian", ActivityType.Watching);
-        return Client.UpdateStatusAsync(activity);
+        var activity = new DiscordActivity(activityName, activityType);
+        return Client.UpdateStatusAsync(activity, status);
+    }
+
+    public Task SetRandomActivity()
+    {
+        var status = _botConfig.Statuses.RandomElement();
+        return SetActivity(status.ActivityType, status.Activity, status.Status);
     }
 
     public Task InitializeAndConnectAsync()
@@ -87,5 +97,12 @@ public sealed class DiscordClientService : IDiscordClient
         if (Client == null)
             throw new Exception("Please initialize the service before trying to connect.");
         return Client.DisconnectAsync();
+    }
+
+    private Task OnGuildDownloadCompleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
+    {
+        if (_botConfig.Statuses.Length > 0)
+            return SetRandomActivity();
+        return Task.CompletedTask;
     }
 }
