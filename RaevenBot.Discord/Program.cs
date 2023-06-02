@@ -1,34 +1,41 @@
-﻿using RaevenBot.Discord.Contracts;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Services;
 using Serilog;
+using Serilog.Events;
 
 namespace RaevenBot.Discord;
 
 internal static class Program
 {
-    public static ServiceProvider ServiceProvider { get; private set; } = null!;
+    public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
-    private static void Main(string[] args)
-    {
-        MainAsync(args).GetAwaiter().GetResult();
-    }
-
-    private static async Task MainAsync(string[] args)
+    private static async Task Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
-                    .WriteTo
-                    .Console()
-                    .CreateLogger();
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateLogger();
 
-        ServiceProvider = new ServiceProvider();
-        var discord = ServiceProvider.GetService<IDiscordClient>();
+        var host = Host.CreateDefaultBuilder(args)
+            .UseConsoleLifetime()
+            .UseSerilog()
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<IFileService, FileService>();
+                services.AddSingleton<IDatabaseService, DatabaseService>();
+                services.AddSingleton<IChannelRelayService, ChannelRelayService>();
 
-        await discord.InitializeAndConnectAsync();
+                services.AddSingleton<IDiscordClient, DiscordClientService>();
+                services.AddHostedService(p => (DiscordClientService)p.GetRequiredService<IDiscordClient>());
 
-        while (Console.ReadLine() != "exit")
-        {
-        }
+                //services.AddHostedService<StatusService>();
+            }).Build();
 
-        await discord.DisconnectAsync();
+        ServiceProvider = host.Services;
+
+        await host.RunAsync();
     }
 }

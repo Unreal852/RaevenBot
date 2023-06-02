@@ -10,10 +10,8 @@ namespace RaevenBot.Discord.Services;
 
 public sealed class ChannelRelayService : IChannelRelayService
 {
-    // TODO: Support multi-cast
-
-    private readonly IDiscordClient                                _discordClient;
-    private readonly IDatabaseService                              _databaseStorage;
+    private readonly IDiscordClient _discordClient;
+    private readonly IDatabaseService _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
 
     public ChannelRelayService(IDiscordClient discordClient, IDatabaseService databaseStorage)
@@ -84,7 +82,7 @@ public sealed class ChannelRelayService : IChannelRelayService
                     continue;
                 var builder = new DiscordEmbedBuilder
                 {
-                        ImageUrl = messageAttachment.Url
+                    ImageUrl = messageAttachment.Url
                 };
                 messageBuilder.AddEmbed(builder.Build());
             }
