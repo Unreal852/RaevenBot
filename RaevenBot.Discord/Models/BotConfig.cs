@@ -6,8 +6,8 @@ namespace RaevenBot.Discord.Models;
 public sealed class BotConfig : IJsonOnDeserialized
 {
     public string Token { get; set; } = string.Empty;
-    public string[] Prefixes { get; set; } = new[] { "!" };
-    public BotStatus[] Statuses { get; set; } = new BotStatus[]
+    public string[] Prefixes { get; set; } = { "!" };
+    public BotStatus[] Statuses { get; set; } =
     {
         new() { ActivityType=ActivityType.Custom, Activity = "Idle", Status = UserStatus.Idle}
     };
