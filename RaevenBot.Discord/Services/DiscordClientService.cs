@@ -92,7 +92,6 @@ public sealed class DiscordClientService : IHostedService, IDiscordClient
     private Task OnGuildDownloadCompleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
     {
         _logger.LogInformation("Connected !");
-        _logger.LogInformation("{Client}", ClientConnected);
         ClientConnected?.Invoke(this, null!);
         if (_botConfig.Statuses.Length > 0)
             return SetRandomActivity();
