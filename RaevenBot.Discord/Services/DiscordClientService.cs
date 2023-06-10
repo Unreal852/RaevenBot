@@ -16,7 +16,7 @@ public sealed class DiscordClientService : IHostedService, IDiscordClient
     private readonly ILogger<DiscordClientService> _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IFileService _fileService;
-    private BotConfig _botConfig = null!;
+    private readonly BotConfig _botConfig = null!;
 
     public DiscordClientService(ILogger<DiscordClientService> logger, IHostApplicationLifetime applicationLifetime, IFileService fileService)
     {
@@ -43,7 +43,6 @@ public sealed class DiscordClientService : IHostedService, IDiscordClient
         };
 
         Client = new(discordConfig);
-        logger.LogInformation("Instantiated");
     }
 
     public event EventHandler? ClientConnected;
