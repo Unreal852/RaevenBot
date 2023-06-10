@@ -93,7 +93,13 @@ public sealed class ChannelRelayService : IChannelRelayService
 
     private Task OnChannelDeleted(DiscordClient sender, ChannelDeleteEventArgs e)
     {
-        // TODO: Automatically remove relay when registered channel is deleted
+        if (_relays.TryGetValue(e.Channel.Id, out var channelRelayInfo))
+        {
+            var dbChannels = _databaseStorage.GetCollection<ChannelRelayInfo>();
+            var removedElements = dbChannels.DeleteMany(info => info.ToChannelId == e.Channel.Id);
+            if (removedElements > 0)
+                _relays.Remove(channelRelayInfo.FromChannelId, out _);
+        }
         return Task.CompletedTask;
     }
 }
