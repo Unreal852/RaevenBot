@@ -31,7 +31,7 @@ internal static class Program
                 services.AddSingleton<IDiscordClient, DiscordClientService>();
                 services.AddHostedService(p => (DiscordClientService)p.GetRequiredService<IDiscordClient>());
 
-                //services.AddHostedService<StatusService>();
+                services.AddHostedService<StatusService>();
             }).Build();
 
         ServiceProvider = host.Services;
