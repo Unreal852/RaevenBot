@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class FileService : IFileService
+internal sealed class FileService : IFileService
 {
     private const string DataFolderName = "data";
     private const string ConfigFileName = "config.json";

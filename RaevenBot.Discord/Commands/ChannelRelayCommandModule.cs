@@ -11,7 +11,7 @@ namespace RaevenBot.Discord.Commands;
 [Group("channel"), Aliases("chan", "ch")]
 [Description("Manage channel relays.")]
 [RequirePermissions(Permissions.ManageChannels)]
-public class ChannelRelayCommandModule : BaseCommandModule
+internal sealed class ChannelRelayCommandModule : BaseCommandModule
 {
     public IChannelRelayService ChannelRelayService { private get; set; } = null!;
 

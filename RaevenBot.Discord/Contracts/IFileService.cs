@@ -2,7 +2,7 @@
 
 namespace RaevenBot.Discord.Contracts;
 
-public interface IFileService
+internal interface IFileService
 {
     DirectoryInfo DataFolder { get; }
     bool ContainsFile(string fileName);

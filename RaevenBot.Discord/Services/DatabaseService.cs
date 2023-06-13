@@ -3,7 +3,7 @@ using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class DatabaseService : IDatabaseService
+internal sealed class DatabaseService : IDatabaseService
 {
     private const string DatabaseFileName = "database.db";
 

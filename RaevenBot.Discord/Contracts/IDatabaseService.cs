@@ -2,7 +2,7 @@
 
 namespace RaevenBot.Discord.Contracts;
 
-public interface IDatabaseService
+internal interface IDatabaseService
 {
     ILiteCollection<T> GetCollection<T>(string? collectionName = null);
 }

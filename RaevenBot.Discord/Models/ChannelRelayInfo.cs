@@ -4,7 +4,7 @@ using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Models;
 
-public class ChannelRelayInfo
+internal sealed class ChannelRelayInfo
 {
     public ChannelRelayInfo()
     {

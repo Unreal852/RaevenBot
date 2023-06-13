@@ -3,7 +3,7 @@ using RaevenBot.Discord.Contracts;
 
 namespace RaevenBot.Discord.Services;
 
-internal class StatusService : BackgroundService, IStatusService
+internal sealed class StatusService : BackgroundService, IStatusService
 {
     private readonly PeriodicTimer _timer = new(TimeSpan.FromMinutes(5));
     private readonly IDiscordClient _discordClient;

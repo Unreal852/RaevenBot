@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Models;
 
-public sealed class BotConfig : IJsonOnDeserialized
+internal sealed class BotConfig : IJsonOnDeserialized
 {
     public string Token { get; set; } = string.Empty;
     public string[] Prefixes { get; set; } = { "!" };
@@ -18,7 +18,7 @@ public sealed class BotConfig : IJsonOnDeserialized
     }
 }
 
-public sealed class BotStatus
+internal sealed class BotStatus
 {
     public ActivityType ActivityType { get; set; } = ActivityType.Custom;
     public UserStatus Status { get; set; } = UserStatus.Online;

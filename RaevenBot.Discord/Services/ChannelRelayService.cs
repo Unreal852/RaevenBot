@@ -8,7 +8,7 @@ using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class ChannelRelayService : IChannelRelayService
+internal sealed class ChannelRelayService : IChannelRelayService
 {
     private readonly IDiscordClient _discordClient;
     private readonly IDatabaseService _databaseStorage;

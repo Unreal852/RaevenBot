@@ -3,7 +3,7 @@ using DSharpPlus.Entities;
 
 namespace RaevenBot.Discord.Contracts;
 
-public interface IDiscordClient
+internal interface IDiscordClient
 {
     event EventHandler ClientConnected;
 

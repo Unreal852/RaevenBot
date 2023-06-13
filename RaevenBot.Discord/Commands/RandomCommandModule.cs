@@ -9,7 +9,7 @@ namespace RaevenBot.Discord.Commands;
 
 [Group("random"), Aliases("rand", "rd", "r", "rdm")]
 [Description("Random generator")]
-public class RandomCommandModule : BaseCommandModule
+public sealed class RandomCommandModule : BaseCommandModule
 {
     private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private const string HeadCoinUrl = "https://flip-a-coin.com/img/coin/us/1cent_1.png";
@@ -43,7 +43,7 @@ public class RandomCommandModule : BaseCommandModule
     }
 
     [Command("elements"), Aliases("e"), Description("Pick a random element from the provided list.")]
-    public async Task RandomElementCommand(CommandContext ctx, [Description("The list of elements to choose from")]  params string[] args)
+    public async Task RandomElementCommand(CommandContext ctx, [Description("The list of elements to choose from")] params string[] args)
     {
         if (args.Length == 2)
         {

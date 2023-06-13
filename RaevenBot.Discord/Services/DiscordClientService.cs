@@ -11,7 +11,7 @@ using Serilog;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class DiscordClientService : IHostedService, IDiscordClient
+internal sealed class DiscordClientService : IHostedService, IDiscordClient
 {
     private readonly ILogger<DiscordClientService> _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
