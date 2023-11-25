@@ -2,6 +2,8 @@
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Extensions;
 using RaevenBot.Discord.Models;
@@ -9,36 +11,27 @@ using Serilog;
 
 namespace RaevenBot.Discord.Services;
 
-#pragma warning disable CS8618
-
-public sealed class DiscordClientService : IDiscordClient
+internal sealed class DiscordClientService : IHostedService, IDiscordClient
 {
+    private readonly ILogger<DiscordClientService> _logger;
+    private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IFileService _fileService;
-    private readonly ILogger _logger;
+    private readonly BotConfig _botConfig = null!;
 
-    private BotConfig _botConfig = null!;
-
-    public DiscordClientService(ILogger logger, IFileService fileService)
+    public DiscordClientService(ILogger<DiscordClientService> logger, IHostApplicationLifetime applicationLifetime, IFileService fileService)
     {
         _logger = logger;
+        _applicationLifetime = applicationLifetime;
         _fileService = fileService;
-    }
-
-    public DiscordClient Client { get; private set; }
-
-    public void Initialize()
-    {
-        if (Client != null)
-            return;
 
         if (!_fileService.TryGetConfiguration(out _botConfig!))
         {
-            _logger.Error("Failed to load the bot configuration");
+            _logger.LogError("Failed to load the bot configuration");
         }
 
         if (string.IsNullOrWhiteSpace(_botConfig.Token))
         {
-            _logger.Error("Missing token in the bot configuration");
+            _logger.LogError("Missing token in the bot configuration");
         }
 
         var discordConfig = new DiscordConfiguration
@@ -46,10 +39,18 @@ public sealed class DiscordClientService : IDiscordClient
             Token = _botConfig.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
-            LoggerFactory = new Microsoft.Extensions.Logging.LoggerFactory().AddSerilog()
+            LoggerFactory = new LoggerFactory().AddSerilog()
         };
 
-        Client = new DiscordClient(discordConfig);
+        Client = new(discordConfig);
+    }
+
+    public event EventHandler? ClientConnected;
+
+    public DiscordClient Client { get; private set; }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
         Client.GuildDownloadCompleted += OnGuildDownloadCompleted;
 
         var commandsConfig = new CommandsNextConfiguration
@@ -64,6 +65,15 @@ public sealed class DiscordClientService : IDiscordClient
 
         var commands = Client.UseCommandsNext(commandsConfig);
         commands.RegisterCommands(Assembly.GetExecutingAssembly());
+
+        _logger.LogInformation("Connecting to Discord...");
+        return Client.ConnectAsync();
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Disconnecting from Discord...");
+        return Client.DisconnectAsync();
     }
 
     public Task SetActivity(ActivityType activityType, string activityName, UserStatus status)
@@ -78,29 +88,10 @@ public sealed class DiscordClientService : IDiscordClient
         return SetActivity(status.ActivityType, status.Activity, status.Status);
     }
 
-    public Task InitializeAndConnectAsync()
-    {
-        if (Client == null)
-            Initialize();
-        return ConnectAsync();
-    }
-
-    public Task ConnectAsync()
-    {
-        if (Client == null)
-            throw new Exception("Please initialize the service before trying to connect.");
-        return Client.ConnectAsync();
-    }
-
-    public Task DisconnectAsync()
-    {
-        if (Client == null)
-            throw new Exception("Please initialize the service before trying to connect.");
-        return Client.DisconnectAsync();
-    }
-
     private Task OnGuildDownloadCompleted(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
     {
+        _logger.LogInformation("Connected !");
+        ClientConnected?.Invoke(this, null!);
         if (_botConfig.Statuses.Length > 0)
             return SetRandomActivity();
         return Task.CompletedTask;

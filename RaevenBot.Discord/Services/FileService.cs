@@ -1,27 +1,27 @@
-﻿using RaevenBot.Discord.Contracts;
+﻿using Microsoft.Extensions.Logging;
+using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Models;
-using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class FileService : IFileService
+internal sealed class FileService : IFileService
 {
     private const string DataFolderName = "data";
     private const string ConfigFileName = "config.json";
 
-    private readonly ILogger _logger;
+    private readonly ILogger<FileService> _logger;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         WriteIndented = true,
-        Converters = 
+        Converters =
         {
             new JsonStringEnumConverter()
         }
     };
 
-    public FileService(ILogger logger)
+    public FileService(ILogger<FileService> logger)
     {
         _logger = logger;
         DataFolder = new(Path.Combine(AppContext.BaseDirectory, DataFolderName));
@@ -60,7 +60,7 @@ public sealed class FileService : IFileService
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Failed to read config file");
+            _logger.LogError(ex, "Failed to read configuration file");
             botConfig = null;
             return false;
         }

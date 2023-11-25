@@ -8,12 +8,10 @@ using SerilogTimings;
 
 namespace RaevenBot.Discord.Services;
 
-public sealed class ChannelRelayService : IChannelRelayService
+internal sealed class ChannelRelayService : IChannelRelayService
 {
-    // TODO: Support multi-cast
-
-    private readonly IDiscordClient                                _discordClient;
-    private readonly IDatabaseService                              _databaseStorage;
+    private readonly IDiscordClient _discordClient;
+    private readonly IDatabaseService _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
 
     public ChannelRelayService(IDiscordClient discordClient, IDatabaseService databaseStorage)
@@ -84,7 +82,7 @@ public sealed class ChannelRelayService : IChannelRelayService
                     continue;
                 var builder = new DiscordEmbedBuilder
                 {
-                        ImageUrl = messageAttachment.Url
+                    ImageUrl = messageAttachment.Url
                 };
                 messageBuilder.AddEmbed(builder.Build());
             }
@@ -95,7 +93,13 @@ public sealed class ChannelRelayService : IChannelRelayService
 
     private Task OnChannelDeleted(DiscordClient sender, ChannelDeleteEventArgs e)
     {
-        // TODO: Automatically remove relay when registered channel is deleted
+        if (_relays.TryGetValue(e.Channel.Id, out var channelRelayInfo))
+        {
+            var dbChannels = _databaseStorage.GetCollection<ChannelRelayInfo>();
+            var removedElements = dbChannels.DeleteMany(info => info.ToChannelId == e.Channel.Id);
+            if (removedElements > 0)
+                _relays.Remove(channelRelayInfo.FromChannelId, out _);
+        }
         return Task.CompletedTask;
     }
 }

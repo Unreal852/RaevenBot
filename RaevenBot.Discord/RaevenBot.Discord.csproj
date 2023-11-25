@@ -5,17 +5,20 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-01574" />
-      <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-01574" />
-      <PackageReference Include="Jab" Version="0.8.6" />
-      <PackageReference Include="LiteDB" Version="5.0.16" />
-      <PackageReference Include="Serilog" Version="3.0.0-dev-01998" />
+      <PackageReference Include="DSharpPlus" Version="4.4.2" />
+      <PackageReference Include="DSharpPlus.CommandsNext" Version="4.4.2" />
+      <PackageReference Include="LiteDB" Version="5.0.17" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+      <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+      <PackageReference Include="Serilog" Version="3.0.1" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
       <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00910" />
-      <PackageReference Include="SerilogTimings" Version="3.0.2-dev-00041" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+      <PackageReference Include="SerilogTimings" Version="3.0.1" />
     </ItemGroup>
 
 </Project>

@@ -2,6 +2,9 @@
   "profiles": {
     "RaevenBot.Discord": {
       "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }

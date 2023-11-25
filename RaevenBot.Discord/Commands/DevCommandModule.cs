@@ -9,7 +9,7 @@ namespace RaevenBot.Discord.Commands;
 
 [Group("developper"), Aliases("dev", "d")]
 [Description("Various tools for developpers")]
-public class DevCommandModule : BaseCommandModule
+internal sealed class DevCommandModule : BaseCommandModule
 {
     public ILogger Logger { private get; set; } = null!;
     public IDiscordClient Client { private get; set; } = null!;
