@@ -2,6 +2,7 @@
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Models;
 using SerilogTimings;
@@ -10,12 +11,14 @@ namespace RaevenBot.Discord.Services;
 
 internal sealed class ChannelRelayService : IChannelRelayService
 {
+    private readonly ILogger<ChannelRelayService> _logger;
     private readonly IDiscordClient _discordClient;
     private readonly IDatabaseService _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
 
-    public ChannelRelayService(IDiscordClient discordClient, IDatabaseService databaseStorage)
+    public ChannelRelayService(ILogger<ChannelRelayService> logger, IDiscordClient discordClient, IDatabaseService databaseStorage)
     {
+        _logger = logger;
         _discordClient = discordClient;
         _databaseStorage = databaseStorage;
 
@@ -46,11 +49,11 @@ internal sealed class ChannelRelayService : IChannelRelayService
             }
 
             return Task.FromResult(OpResult.NewSuccess(
-                    $"Messages from the channel '{sourceChannel.Name}' will be relayed into '{targetChannel.Name}'."));
+                $"Messages from the channel '{sourceChannel.Name}' will be relayed into '{targetChannel.Name}'."));
         }
 
         return Task.FromResult(OpResult.NewFailed(
-                $"The channel '{sourceChannel.Name}' is already registered. (Multi-Cast not yet supported)"));
+            $"The channel '{sourceChannel.Name}' is already registered. (Multi-Cast not yet supported)"));
     }
 
     public Task<OpResult> RemoveRelay(DiscordChannel sourceChannel, DiscordChannel targetChannel)
@@ -59,10 +62,10 @@ internal sealed class ChannelRelayService : IChannelRelayService
         {
             var dbCol = _databaseStorage.GetCollection<ChannelRelayInfo>();
             var deleted = dbCol.DeleteMany(info =>
-                    info.FromChannelId == sourceChannel.Id && info.ToChannelId == targetChannel.Id);
+                info.FromChannelId == sourceChannel.Id && info.ToChannelId == targetChannel.Id);
             return Task.FromResult(deleted >= 1
-                    ? OpResult.NewSuccess("The relay has been deleted.")
-                    : OpResult.NewFailed("No relays were deleted."));
+                ? OpResult.NewSuccess("The relay has been deleted.")
+                : OpResult.NewFailed("No relays were deleted."));
         }
 
         return Task.FromResult(OpResult.NewFailed("This channel has no subscribed channels"));
@@ -98,8 +101,12 @@ internal sealed class ChannelRelayService : IChannelRelayService
             var dbChannels = _databaseStorage.GetCollection<ChannelRelayInfo>();
             var removedElements = dbChannels.DeleteMany(info => info.ToChannelId == e.Channel.Id);
             if (removedElements > 0)
+            {
                 _relays.Remove(channelRelayInfo.FromChannelId, out _);
+                _logger.LogInformation("The channel {ChannelName} has been deleted, all related relays have been removed ({RemovedElements})", e.Channel.Name, removedElements);
+            }
         }
+
         return Task.CompletedTask;
     }
 }

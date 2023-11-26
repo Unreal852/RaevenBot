@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Models;
 
+
 internal sealed class BotConfig : IJsonOnDeserialized
 {
     public string Token { get; set; } = string.Empty;
