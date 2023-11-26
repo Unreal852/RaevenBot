@@ -11,7 +11,7 @@ internal static class Program
 {
     public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
-    private static async Task Main(string[] args)
+    private static Task Main(string[] args)
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -36,6 +36,6 @@ internal static class Program
 
         ServiceProvider = host.Services;
 
-        await host.RunAsync();
+        return host.RunAsync();
     }
 }

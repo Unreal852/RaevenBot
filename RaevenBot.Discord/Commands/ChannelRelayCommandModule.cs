@@ -4,6 +4,8 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using RaevenBot.Discord.Contracts;
 
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace RaevenBot.Discord.Commands;

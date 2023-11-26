@@ -3,6 +3,8 @@ using DSharpPlus.CommandsNext.Attributes;
 using RaevenBot.Discord.Contracts;
 using Serilog;
 
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace RaevenBot.Discord.Commands;

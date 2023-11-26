@@ -17,6 +17,7 @@ internal sealed class DiscordClientService : IHostedService, IDiscordClient
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IFileService _fileService;
     private readonly BotConfig _botConfig = null!;
+    private readonly bool _enableStatuses = false; // DSharp Update : bots cant use custom status
 
     public DiscordClientService(ILogger<DiscordClientService> logger, IHostApplicationLifetime applicationLifetime, IFileService fileService)
     {
@@ -92,7 +93,7 @@ internal sealed class DiscordClientService : IHostedService, IDiscordClient
     {
         _logger.LogInformation("Connected !");
         ClientConnected?.Invoke(this, null!);
-        if (_botConfig.Statuses.Length > 0)
+        if (_enableStatuses && _botConfig.Statuses.Length > 0)
             return SetRandomActivity();
         return Task.CompletedTask;
     }
