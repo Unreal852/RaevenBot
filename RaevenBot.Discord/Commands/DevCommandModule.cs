@@ -25,8 +25,8 @@ internal sealed class DevCommandModule : BaseCommandModule
     }
 
     [Command("status"), Aliases("s"), Description("Update the bot status")]
-    public async Task BotStatusCommand(CommandContext ctx)
+    public Task BotStatusCommand(CommandContext ctx)
     {
-        await Client.SetRandomActivity();
+        return Client.SetRandomActivity();
     }
 }

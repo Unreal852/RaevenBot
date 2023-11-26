@@ -12,6 +12,7 @@ internal sealed class FileService : IFileService
     private const string ConfigFileName = "config.json";
 
     private readonly ILogger<FileService> _logger;
+
     private readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
         WriteIndented = true,

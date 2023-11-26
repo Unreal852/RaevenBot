@@ -16,9 +16,9 @@ internal sealed class OpResult
     public DiscordEmbed ToEmbed(string? overrideMessage = null)
     {
         var embedBuilder = new DiscordEmbedBuilder()
-                          .WithTitle(IsSuccess ? "Success" : "Failed")
-                          .WithColor(IsSuccess ? DiscordColor.SpringGreen : DiscordColor.IndianRed)
-                          .WithDescription(overrideMessage ?? Message ?? string.Empty);
+            .WithTitle(IsSuccess ? "Success" : "Failed")
+            .WithColor(IsSuccess ? DiscordColor.SpringGreen : DiscordColor.IndianRed)
+            .WithDescription(overrideMessage ?? Message ?? string.Empty);
         return embedBuilder.Build();
     }
 }

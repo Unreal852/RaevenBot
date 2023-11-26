@@ -3,19 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace RaevenBot.Discord.Models;
 
-
 internal sealed class BotConfig : IJsonOnDeserialized
 {
     public string Token { get; set; } = string.Empty;
     public string[] Prefixes { get; set; } = { "!" };
+
     public BotStatus[] Statuses { get; set; } =
     {
-        new() { ActivityType=ActivityType.Custom, Activity = "Idle", Status = UserStatus.Idle}
+        new() { ActivityType = ActivityType.Custom, Activity = "Idle", Status = UserStatus.Idle }
     };
 
     public void OnDeserialized()
     {
-
     }
 }
 

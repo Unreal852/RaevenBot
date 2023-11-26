@@ -17,10 +17,9 @@ internal sealed class ChannelRelayInfo
     }
 
     public ulong FromChannelId { get; set; }
-    public ulong ToChannelId   { get; set; }
+    public ulong ToChannelId { get; set; }
 
-    [BsonIgnore]
-    private DiscordChannel? ToChannel { get; set; }
+    [BsonIgnore] private DiscordChannel? ToChannel { get; set; }
 
     public async Task<DiscordChannel> GetTargetedChannel(IDiscordClient discordClient)
     {

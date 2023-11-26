@@ -16,7 +16,8 @@ internal sealed class ChannelRelayService : IChannelRelayService
     private readonly IDatabaseService _databaseStorage;
     private readonly ConcurrentDictionary<ulong, ChannelRelayInfo> _relays = new();
 
-    public ChannelRelayService(ILogger<ChannelRelayService> logger, IDiscordClient discordClient, IDatabaseService databaseStorage)
+    public ChannelRelayService(ILogger<ChannelRelayService> logger, IDiscordClient discordClient,
+        IDatabaseService databaseStorage)
     {
         _logger = logger;
         _discordClient = discordClient;
@@ -103,7 +104,9 @@ internal sealed class ChannelRelayService : IChannelRelayService
             if (removedElements > 0)
             {
                 _relays.Remove(channelRelayInfo.FromChannelId, out _);
-                _logger.LogInformation("The channel {ChannelName} has been deleted, all related relays have been removed ({RemovedElements})", e.Channel.Name, removedElements);
+                _logger.LogInformation(
+                    "The channel {ChannelName} has been deleted, all related relays have been removed ({RemovedElements})",
+                    e.Channel.Name, removedElements);
             }
         }
 
