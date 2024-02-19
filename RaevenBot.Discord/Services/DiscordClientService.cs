@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RaevenBot.Discord.Commands;
 using RaevenBot.Discord.Contracts;
 using RaevenBot.Discord.Extensions;
 using RaevenBot.Discord.Models;
@@ -67,6 +68,7 @@ internal sealed class DiscordClientService : IHostedService, IDiscordClient
 
         var commands = Client.UseCommandsNext(commandsConfig);
         commands.RegisterCommands(Assembly.GetExecutingAssembly());
+        commands.RegisterCommands<ChannelRelayCommandModule>(); // Not registering by itself
 
         _logger.LogInformation("Connecting to Discord...");
         return Client.ConnectAsync();
