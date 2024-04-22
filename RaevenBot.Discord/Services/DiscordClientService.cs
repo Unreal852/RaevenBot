@@ -17,7 +17,7 @@ internal sealed class DiscordClientService : IHostedService, IDiscordClient
     private readonly ILogger<DiscordClientService> _logger;
     private readonly IHostApplicationLifetime _applicationLifetime;
     private readonly IFileService _fileService;
-    private readonly BotConfig _botConfig = null!;
+    private readonly BotConfig _botConfig;
     private readonly bool _enableStatuses = false; // DSharp Update : bots cant use custom status
 
     public DiscordClientService(ILogger<DiscordClientService> logger, IHostApplicationLifetime applicationLifetime,
@@ -80,7 +80,7 @@ internal sealed class DiscordClientService : IHostedService, IDiscordClient
         return Client.DisconnectAsync();
     }
 
-    public Task SetActivity(ActivityType activityType, string activityName, UserStatus status)
+    public Task SetActivity(DiscordActivityType activityType, string activityName, DiscordUserStatus status)
     {
         var activity = new DiscordActivity(activityName, activityType);
         return Client.UpdateStatusAsync(activity, status);

@@ -10,7 +10,7 @@ internal sealed class BotConfig : IJsonOnDeserialized
 
     public BotStatus[] Statuses { get; set; } =
     {
-        new() { ActivityType = ActivityType.Custom, Activity = "Idle", Status = UserStatus.Idle }
+        new() { ActivityType = DiscordActivityType.Custom, Activity = "Idle", Status = DiscordUserStatus.Idle }
     };
 
     public void OnDeserialized()
@@ -20,7 +20,7 @@ internal sealed class BotConfig : IJsonOnDeserialized
 
 internal sealed class BotStatus
 {
-    public ActivityType ActivityType { get; set; } = ActivityType.Custom;
-    public UserStatus Status { get; set; } = UserStatus.Online;
+    public DiscordActivityType ActivityType { get; set; } = DiscordActivityType.Custom;
+    public DiscordUserStatus Status { get; set; } = DiscordUserStatus.Online;
     public string Activity { get; set; } = string.Empty;
 }

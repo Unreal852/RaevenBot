@@ -9,6 +9,6 @@ internal interface IDiscordClient
 
     DiscordClient Client { get; }
 
-    Task SetActivity(ActivityType activityType, string activityName, UserStatus status);
+    Task SetActivity(DiscordActivityType activityType, string activityName, DiscordUserStatus status);
     Task SetRandomActivity();
 }
