@@ -10,14 +10,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02211" />
-      <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-02211" />
+      <PackageReference Include="DSharpPlus" Version="5.0.0-nightly-02267" />
+      <PackageReference Include="DSharpPlus.CommandsNext" Version="5.0.0-nightly-02267" />
       <PackageReference Include="LiteDB" Version="5.0.19" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.3.24172.9" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.4.24266.19" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-      <PackageReference Include="Serilog" Version="4.0.0-dev-02149" />
+      <PackageReference Include="Serilog" Version="4.0.0-dev-02201" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
-      <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.1-dev-10389" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.1-dev-10391" />
       <PackageReference Include="Serilog.Sinks.Console" Version="5.1.0-dev-00943" />
       <PackageReference Include="SerilogTimings" Version="3.1.0" />
     </ItemGroup>
